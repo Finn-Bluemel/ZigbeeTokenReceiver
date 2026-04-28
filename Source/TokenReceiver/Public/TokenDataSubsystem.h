@@ -40,8 +40,24 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Token")
     void ClosePort();
 
+    /**
+     * Fire fake token messages on a timer — useful for testing without hardware.
+     * Sensor values are random 0–4. Call StopDummyMode() to stop.
+     * @param IntervalSeconds  How often to fire (default 1.0s)
+     * @param FakeTokenId      Token ID to use in the dummy messages (default 99)
+     */
+    UFUNCTION(BlueprintCallable, Category = "Token")
+    void StartDummyMode(float IntervalSeconds = 1.0f, int32 FakeTokenId = 99);
+
+    /** Stop firing dummy messages. */
+    UFUNCTION(BlueprintCallable, Category = "Token")
+    void StopDummyMode();
+
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Token")
     bool IsConnected() const { return bConnected; }
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Token")
+    bool IsDummyMode() const { return bDummyMode; }
 
     // USubsystem
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -50,10 +66,16 @@ public:
     // FTickableGameObject — dispatches queued messages on the game thread
     virtual void    Tick(float DeltaTime) override;
     virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UTokenDataSubsystem, STATGROUP_Tickables); }
-    virtual bool    IsTickable() const override { return !IsTemplate() && bConnected; }
+    virtual bool    IsTickable() const override { return !IsTemplate() && (bConnected || bDummyMode); }
 
 private:
     bool bConnected = false;
+    bool bDummyMode = false;
+
+    // Dummy mode state
+    float DummyInterval   = 1.0f;
+    float DummyAccum      = 0.0f;
+    int32 DummyTokenId    = 99;
 
     TQueue<FTokenData, EQueueMode::Mpsc> MessageQueue;
 

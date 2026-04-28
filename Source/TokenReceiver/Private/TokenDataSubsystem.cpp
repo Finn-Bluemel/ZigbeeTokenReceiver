@@ -68,6 +68,7 @@ void UTokenDataSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UTokenDataSubsystem::Deinitialize()
 {
+    StopDummyMode();
     ClosePort();
     Super::Deinitialize();
 }
@@ -126,13 +127,58 @@ void UTokenDataSubsystem::ClosePort()
     bConnected = false;
 }
 
+// ── Dummy mode ────────────────────────────────────────────────────────────────
+
+void UTokenDataSubsystem::StartDummyMode(float IntervalSeconds, int32 FakeTokenId)
+{
+    bDummyMode    = true;
+    DummyInterval = FMath::Max(IntervalSeconds, 0.05f);
+    DummyAccum    = 0.0f;
+    DummyTokenId  = FakeTokenId;
+    UE_LOG(LogTemp, Log, TEXT("TokenReceiver: dummy mode started (interval=%.2fs, id=%d)"), DummyInterval, DummyTokenId);
+}
+
+void UTokenDataSubsystem::StopDummyMode()
+{
+    if (bDummyMode)
+    {
+        bDummyMode = false;
+        UE_LOG(LogTemp, Log, TEXT("TokenReceiver: dummy mode stopped"));
+    }
+}
+
 // ── FTickableGameObject ───────────────────────────────────────────────────────
 
-void UTokenDataSubsystem::Tick(float /*DeltaTime*/)
+void UTokenDataSubsystem::Tick(float DeltaTime)
 {
+    // Dispatch real serial messages
     FTokenData Data;
     while (MessageQueue.Dequeue(Data))
     {
         OnTokenReceived.Broadcast(Data);
+    }
+
+    // Fire dummy messages on a timer
+    if (bDummyMode)
+    {
+        DummyAccum += DeltaTime;
+        if (DummyAccum >= DummyInterval)
+        {
+            DummyAccum -= DummyInterval;
+
+            FTokenData Fake;
+            Fake.TokenId   = DummyTokenId;
+            Fake.Sensor0   = FMath::RandRange(0, 4);
+            Fake.Sensor1   = FMath::RandRange(0, 4);
+            Fake.Sensor2   = FMath::RandRange(0, 4);
+            Fake.Sensor3   = FMath::RandRange(0, 4);
+            Fake.BatteryMv = FMath::RandRange(3500, 3700);
+            Fake.Timestamp = TEXT("DUMMY");
+            Fake.RawMessage = FString::Printf(
+                TEXT("DUMMY [%d] [%d %d %d %d] batt:%dmV"),
+                Fake.TokenId, Fake.Sensor0, Fake.Sensor1, Fake.Sensor2, Fake.Sensor3, Fake.BatteryMv);
+
+            OnTokenReceived.Broadcast(Fake);
+        }
     }
 }

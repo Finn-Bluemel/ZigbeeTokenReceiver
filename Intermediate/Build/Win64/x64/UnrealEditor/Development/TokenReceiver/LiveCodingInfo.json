@@ -1,0 +1,14 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.TokenReceiver.cpp.obj": [
+			"TokenData.gen.cpp.obj",
+			"TokenDataSubsystem.gen.cpp.obj",
+			"TokenReceiver.init.gen.cpp.obj",
+			"PerModuleInline.gen.cpp.obj",
+			"SerialReader.cpp.obj",
+			"TokenDataSubsystem.cpp.obj",
+			"TokenReceiverModule.cpp.obj"
+		]
+	}
+}

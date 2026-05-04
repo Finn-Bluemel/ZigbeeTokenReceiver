@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TouchToken — Installer &amp; Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+  <style>
+    :root {
+      --bg:     #080808;
+      --bg2:    #0f1117;
+      --border: #1a1f2e;
+      --border2:#555750;
+      --purple: #8850ff;
+      --cyan:   #00FFCD;
+      --text:   #EEF0EB;
+      --muted:  #666460;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body { background: var(--bg); color: var(--text); font-family: "DM Sans", sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── Nav ── */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 48px; border-bottom: 1px solid var(--border); }
+    .nav-logo svg { display: block; }
+    .nav-label { font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── Installer section ── */
+    #installer-section { display: flex; flex-direction: column; align-items: center; padding: 60px 24px 48px; gap: 40px; }
+
+    .hero { text-align: center; max-width: 540px; }
+    .hero-eye { font-size: .72rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; }
+    .hero h1 { font-family: "Bebas Neue", sans-serif; font-size: clamp(3rem, 9vw, 5.5rem); line-height: .95; letter-spacing: .02em; color: var(--text); margin-bottom: 16px; }
+    .hero h1 span { color: var(--purple); }
+    .hero p { font-size: .95rem; color: var(--muted); line-height: 1.7; }
+
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 2px; padding: 36px; width: 100%; max-width: 460px; position: relative; }
+    .card::before { content:''; position:absolute; top:-1px; left:-1px; width:28px; height:28px; border-top:2px solid var(--purple); border-left:2px solid var(--purple); }
+    .card::after  { content:''; position:absolute; bottom:-1px; right:-1px; width:28px; height:28px; border-bottom:2px solid var(--cyan); border-right:2px solid var(--cyan); }
+
+    .field-label { display:block; font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+
+    /* Board toggle */
+    .board-toggle { display:flex; background:var(--bg); border:1px solid var(--border2); border-radius:2px; padding:3px; margin-bottom:28px; }
+    .board-btn { flex:1; background:none; border:none; color:var(--muted); font-family:"DM Sans",sans-serif; font-size:.78rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:10px; border-radius:1px; cursor:pointer; transition:background .15s, color .15s; }
+    .board-btn.active { background:var(--purple); color:#fff; }
+    .board-btn:not(.active):hover { color:var(--text); }
+
+    .release-notes { font-size:.82rem; color:var(--muted); line-height:1.7; margin-bottom:28px; padding:14px 16px; border-left:2px solid var(--purple); background:rgba(136,80,255,.05); }
+    .release-notes b { color:var(--text); font-weight:600; }
+
+    esp-web-install-button { display:block; width:100%; }
+    esp-web-install-button::part(button) { width:100%; background:var(--purple); color:#fff; font-family:"DM Sans",sans-serif; font-weight:700; font-size:.85rem; letter-spacing:.1em; text-transform:uppercase; padding:16px 24px; border:none; border-radius:2px; cursor:pointer; transition:background .15s; }
+    esp-web-install-button::part(button):hover { background:#9b6aff; }
+    .unsupported-msg { text-align:center; padding:14px; color:#f59e0b; font-size:.85rem; border:1px solid #f59e0b33; border-radius:2px; }
+
+    .req-strip { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+    .req-item { display:flex; align-items:center; gap:8px; font-size:.75rem; color:var(--muted); }
+    .req-dot { width:6px; height:6px; border-radius:50%; background:var(--cyan); flex-shrink:0; }
+
+    /* ── Monitor section ── */
+    #monitor-section { border-top:1px solid var(--border); display:flex; flex-direction:column; flex:1; }
+
+    .monitor-bar { display:flex; align-items:center; gap:10px; padding:14px 48px; border-bottom:1px solid var(--border); }
+    .mon-eye { font-size:.68rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+    .spacer { flex:1; }
+    .dot { width:9px; height:9px; border-radius:50%; background:#1e2d40; transition:background .4s; flex-shrink:0; }
+    .dot.live { background:#22c55e; box-shadow:0 0 8px #22c55e88; }
+    .status-text { font-size:.75rem; color:var(--muted); }
+    .hdr-btn { background:var(--bg2); border:1px solid var(--border); color:var(--muted); padding:5px 14px; border-radius:4px; cursor:pointer; font-size:.75rem; font-family:"DM Sans",sans-serif; }
+    .hdr-btn:hover { color:var(--text); }
+
+    #grid { padding:24px 48px; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; align-content:start; min-height:140px; }
+    .empty-state { color:#1e2d40; font-size:.9rem; padding:60px 0; text-align:center; grid-column:1/-1; }
+
+    /* token card */
+    .token-card { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:18px 20px; transition:border-color .2s; }
+    .token-card.flash { animation:cardflash .5s ease; }
+    @keyframes cardflash { 0%,100%{border-color:var(--border)} 40%{border-color:var(--purple);box-shadow:0 0 18px rgba(136,80,255,.15)} }
+
+    .card-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+    .chip-id { font-size:.78rem; font-weight:700; letter-spacing:.04em; font-family:monospace; }
+    .card-time { font-size:.68rem; color:#334155; margin-left:auto; font-variant-numeric:tabular-nums; }
+
+    .batt-wrap { display:flex; align-items:center; gap:5px; margin-left:auto; margin-right:6px; }
+    .batt-body { width:28px; height:12px; border:1.5px solid currentColor; border-radius:2px; position:relative; overflow:hidden; }
+    .batt-fill { position:absolute; left:0; top:0; bottom:0; border-radius:1px; transition:width .4s; }
+    .batt-nub  { width:3px; height:6px; background:currentColor; border-radius:0 1px 1px 0; margin-left:1px; }
+    .batt-pct  { font-size:.68rem; }
+
+    .slots { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+    .slot { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 6px; text-align:center; transition:border-color .3s, background .3s; }
+    .slot.occupied { border-color:var(--purple); background:rgba(136,80,255,.07); }
+    .slot.just-changed { animation:slotflash .5s ease; }
+    @keyframes slotflash { 0%,100%{background:rgba(136,80,255,.07)} 50%{background:rgba(136,80,255,.2)} }
+    .slot-label { font-size:.58rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+    .slot-value { font-size:1.4rem; font-weight:700; color:#1e2d40; line-height:1; }
+    .slot-value.occupied { color:var(--cyan); }
+
+    /* log drawer */
+    #log-drawer { border-top:1px solid var(--border); }
+    #log-toggle { width:100%; background:none; border:none; color:var(--muted); font-size:.72rem; font-family:"DM Sans",sans-serif; letter-spacing:.06em; text-transform:uppercase; padding:10px 48px; cursor:pointer; display:flex; align-items:center; gap:8px; }
+    #log-toggle:hover { color:var(--text); background:var(--bg2); }
+    #log-toggle .arrow { transition:transform .2s; font-size:.6rem; }
+    #log-toggle.open .arrow { transform:rotate(180deg); }
+    #log-badge { background:rgba(136,80,255,.2); color:var(--purple); border-radius:10px; padding:1px 7px; font-size:.68rem; font-weight:700; margin-left:4px; }
+    #log-body { display:none; max-height:280px; overflow-y:auto; }
+    #log-body.open { display:block; }
+    .log-cols { padding:7px 48px; display:flex; font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; color:#1e2d40; border-bottom:1px solid var(--bg); }
+    .lc-time{width:96px} .lc-chip{width:130px} .lc-slots{flex:1}
+    .log-row { display:flex; align-items:center; padding:5px 48px; border-bottom:1px solid var(--bg); }
+    .log-row.new { animation:rowflash .4s ease; }
+    @keyframes rowflash { from{background:rgba(136,80,255,.06)} to{background:transparent} }
+    .log-row .lc-time { width:96px; color:#1e2d40; font-variant-numeric:tabular-nums; font-size:.7rem; }
+    .log-row .lc-chip { width:130px; font-family:monospace; font-size:.72rem; font-weight:600; }
+    .log-row .lc-slots { flex:1; display:flex; gap:5px; }
+    .stag { border-radius:3px; padding:2px 8px; font-family:monospace; font-size:.7rem; border:1px solid; }
+    .stag.occ   { background:rgba(0,255,205,.06); border-color:rgba(0,255,205,.2); color:var(--cyan); }
+    .stag.empty { background:transparent; border-color:var(--border); color:#1e2d40; }
+
+    /* footer */
+    footer { border-top:1px solid var(--border); padding:20px 48px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    footer p, footer a { font-size:.72rem; color:var(--muted); text-decoration:none; }
+    footer a:hover { color:var(--text); }
+
+    @media(max-width:600px) {
+      nav, .monitor-bar, #grid, .log-cols, .log-row, footer { padding-left:20px; padding-right:20px; }
+      #installer-section { padding:40px 16px 32px; }
+      .card { padding:24px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a href="https://studioborabora.com" target="_blank" aria-label="Studio BoraBora">
+    <svg width="60" height="29" viewBox="0 0 71 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50.4172 25.2105L51.6718 19.8884C48.9546 19.8697 47.3706 20.9071 46.2329 22.9023C46.4431 21.9093 46.5716 20.7973 46.616 20.2202H41.0883C40.9248 21.3299 40.5767 22.8766 40.1889 24.7105L38.1025 34.6164H43.9456L44.9362 29.8247C45.7352 25.9558 47.7047 25.1358 50.4172 25.2105Z" fill="white"/>
+      <path d="M30.547 19.835C24.1362 19.835 21.0312 23.9562 21.0312 28.5727C21.0312 31.9557 23.1993 35.0185 28.6522 34.9999C35.3364 34.9835 38.2895 30.923 38.2895 26.421C38.2895 22.489 35.4135 19.835 30.547 19.835ZM28.9373 31.2665C27.5775 31.2665 26.872 30.3296 26.872 28.7876C26.872 26.5822 28.0775 23.5333 30.2479 23.5333C31.7361 23.5333 32.3669 24.4725 32.3669 25.8486C32.3693 28.1195 31.2222 31.2665 28.9373 31.2665Z" fill="white"/>
+      <path d="M32.0819 18.9075C38.7661 18.8912 41.7192 14.8307 41.7192 10.3287C41.7192 6.3967 38.8408 3.74268 33.9767 3.74268C27.5659 3.74268 24.4609 7.86389 24.4609 12.4804C24.4609 15.8634 26.6314 18.9262 32.0819 18.9075ZM33.68 7.44103C35.1682 7.44103 35.799 8.38021 35.799 9.75629C35.799 12.0295 34.6519 15.1765 32.367 15.1765C31.0049 15.1765 30.3017 14.2396 30.3017 12.6977C30.3017 10.4899 31.5072 7.44103 33.68 7.44103Z" fill="white"/>
+      <path d="M47.3775 18.5241L48.3681 13.7324C49.1671 9.8635 51.1366 9.04346 53.8491 9.11823L55.1013 3.79615C52.3842 3.77746 50.8002 4.81477 49.6601 6.80997C49.8703 5.81704 49.9988 4.70497 50.0432 4.1279H44.5156C44.352 5.23764 44.0039 6.78427 43.6161 8.61826L41.5298 18.5241H47.3775Z" fill="white"/>
+      <path d="M17.4661 24.5778C19.8515 23.8442 21.1598 22.2252 21.1598 20.0688C21.1598 19.3025 21.0033 18.6086 20.6972 17.9988C22.3303 17.0456 23.4377 15.5036 23.447 13.1487C23.447 11.2446 22.1901 9.8615 20.7136 9.27509C23.0989 8.54149 24.4073 6.92244 24.4073 4.76604C24.4073 1.89941 22.2882 0 17.8797 0H7.3383L4.09552 15.3027H4.09085L0 34.6169H11.5576C15.7863 34.6169 20.1809 33.1543 20.1973 28.4514C20.1996 26.5473 18.9427 25.1642 17.4661 24.5778ZM12.352 4.01142H16.1415C17.4521 4.01142 18.2465 4.48101 18.2465 5.60711C18.2465 6.99019 17.1367 7.4411 15.6111 7.4411H11.6137L12.352 4.01142ZM10.8427 30.6335H6.70283L7.53221 26.6992H11.4876C13.1954 26.6992 13.9407 27.4164 13.9407 28.4724C13.943 30.0401 12.8309 30.6335 10.8427 30.6335ZM12.366 22.7415H8.3686L9.10687 19.3118H12.8963C14.2047 19.3118 15.0013 19.7814 15.0013 20.9075C14.999 22.2929 13.8893 22.7415 12.366 22.7415ZM14.7187 15.3051C14.6883 15.3051 14.6626 15.3027 14.6322 15.3027H9.95728L10.7797 11.3941H14.735C16.4428 11.3941 17.1881 12.1113 17.1881 13.1697C17.1881 14.5621 16.3073 15.1836 14.7187 15.3051Z" fill="white"/>
+      <path d="M59.8322 19.835C53.8793 19.835 52.3631 22.5451 51.9169 24.566H57.4469C57.7389 23.7085 58.3814 23.2343 59.643 23.2343C61.22 23.2343 61.6896 23.9609 61.4723 24.9257L61.4069 25.2295C60.2341 25.2575 58.7201 25.2949 57.5637 25.414C53.7742 25.7715 50.1016 26.8976 50.1016 30.8553C50.1016 32.8995 51.4122 34.9998 54.8115 34.9998C57.2927 34.9998 58.7856 34.2032 59.7761 33.0444C59.6944 33.4859 59.6009 34.2149 59.5916 34.6167H65.1426C65.2267 33.9252 65.5982 32.0187 65.9533 30.402L66.9392 25.8112C67.5817 22.8511 66.5233 19.835 59.8322 19.835ZM60.72 28.4138C60.22 30.4908 59.0893 31.2221 57.4095 31.2221C56.4236 31.2221 55.9049 30.7478 55.9049 30.1123C55.9049 28.9442 57.2343 28.5587 58.3393 28.4208C59.1033 28.3274 59.928 28.283 60.7574 28.2643L60.72 28.4138Z" fill="white"/>
+      <path d="M63.2644 3.74268C57.3138 3.74268 55.7952 6.45277 55.349 8.47366H60.879C61.171 7.61624 61.8135 7.14198 63.0751 7.14198C64.6521 7.14198 65.1217 7.86856 64.9044 8.83345L64.839 9.13717C63.6662 9.1652 62.1523 9.20258 60.9958 9.32174C57.2063 9.67919 53.5337 10.8053 53.5337 14.763C53.5337 16.8072 54.8443 18.9075 58.2413 18.9075C60.7225 18.9075 62.2154 18.1109 63.2059 16.9521C63.1242 17.3936 63.0307 18.1225 63.0214 18.5244H68.5724C68.6565 17.8328 69.028 15.9264 69.3831 14.3097L70.369 9.7189C71.0138 6.75883 69.9555 3.74268 63.2644 3.74268ZM64.1521 12.3215C63.6522 14.3985 62.5214 15.1298 60.8416 15.1298C59.8557 15.1298 59.337 14.6555 59.337 14.02C59.337 12.8519 60.6664 12.4664 61.7715 12.3285C62.5354 12.2351 63.3601 12.1907 64.1895 12.172L64.1521 12.3215Z" fill="white"/>
+    </svg>
+  </a>
+  <span class="nav-label">TouchToken</span>
+</nav>
+
+<!-- Installer -->
+<section id="installer-section">
+  <div class="hero">
+    <p class="hero-eye">ESP32-C6 · Zigbee · DS2431</p>
+    <h1>TOUCH<span>TOKEN</span></h1>
+    <p>Flash firmware directly from your browser.<br>No tools, no drivers, no terminal.</p>
+  </div>
+
+  <div class="card">
+    <label class="field-label">Board type</label>
+    <div class="board-toggle">
+      <button class="board-btn active" data-board="sender">Sender</button>
+      <button class="board-btn"        data-board="receiver">Receiver</button>
+    </div>
+
+    <div class="release-notes" id="release-notes"></div>
+
+    <esp-web-install-button id="installer" manifest="firmware/sender/manifest.json">
+      <span slot="unsupported">
+        <div class="unsupported-msg">⚠️ Web Serial not supported — use Chrome or Edge.</div>
+      </span>
+    </esp-web-install-button>
+  </div>
+
+  <div class="req-strip">
+    <div class="req-item"><span class="req-dot"></span>Chrome or Edge</div>
+    <div class="req-item"><span class="req-dot"></span>USB-C data cable</div>
+    <div class="req-item"><span class="req-dot"></span>Seeed XIAO ESP32-C6</div>
+  </div>
+</section>
+
+<!-- Monitor -->
+<section id="monitor-section">
+  <div class="monitor-bar">
+    <span class="mon-eye">Zigbee Monitor</span>
+    <div class="dot" id="dot"></div>
+    <span class="status-text" id="status">Connecting…</span>
+    <div class="spacer"></div>
+    <button class="hdr-btn" onclick="clearAll()">Clear</button>
+  </div>
+
+  <div id="grid">
+    <p class="empty-state">Waiting for tokens…</p>
+  </div>
+
+  <div id="log-drawer">
+    <button id="log-toggle" onclick="toggleLog()">
+      <span class="arrow">▲</span> Event Log <span id="log-badge">0</span>
+    </button>
+    <div id="log-body">
+      <div class="log-cols">
+        <span class="lc-time">Time</span>
+        <span class="lc-chip">Chip ID</span>
+        <span class="lc-slots">Slots</span>
+      </div>
+      <div id="log-rows"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© BoraBora GmbH — TouchToken v1.0</p>
+  <a href="https://github.com/boraborastudios/Digitracks-Touch-Token" target="_blank">GitHub ↗</a>
+</footer>
+
+<script>
+  // ── Installer ────────────────────────────────────────────────────────────────
+
+  const notes = {
+    sender:   '<b>v1.0 · Sender</b> — Zigbee End Device. Scans 4× DS2431 1-Wire connectors (SS1–SS4) and transmits slot numbers + battery voltage once per second.',
+    receiver: '<b>v1.0 · Receiver</b> — Zigbee Coordinator. Programs DS2431 chips with slot numbers on boot, then forwards all incoming token messages to USB serial.'
+  };
+
+  const installer = document.getElementById('installer');
+  const notesEl   = document.getElementById('release-notes');
+
+  function setBoard(board) {
+    installer.setAttribute('manifest', `firmware/${board}/manifest.json`);
+    notesEl.innerHTML = notes[board] || '';
+    document.querySelectorAll('.board-btn').forEach(b => b.classList.toggle('active', b.dataset.board === board));
+  }
+
+  document.querySelectorAll('.board-btn').forEach(btn =>
+    btn.addEventListener('click', () => setBoard(btn.dataset.board))
+  );
+
+  setBoard('sender');
+
+  // ── Monitor ──────────────────────────────────────────────────────────────────
+
+  const MAX_LOG = 500;
+  const tokens  = {};
+  let logCount  = 0, logOpen = false, colorIdx = 0;
+  const palette = ['#8850ff','#00FFCD','#60a5fa','#f472b6','#fbbf24','#fb923c','#22d3ee','#f87171'];
+
+  const TIMEOUT_MS = 5000; // remove card after 5 s with no message
+
+  function getToken(chip) {
+    if (!tokens[chip]) tokens[chip] = { chip, slots:[0,0,0,0], batt:0, time:'', color:palette[colorIdx++ % palette.length], el:null, timer:null };
+    return tokens[chip];
+  }
+
+  function touchToken(tok) {
+    if (tok.timer) clearTimeout(tok.timer);
+    tok.timer = setTimeout(() => removeToken(tok.chip), TIMEOUT_MS);
+  }
+
+  function removeToken(chip) {
+    const tok = tokens[chip];
+    if (!tok) return;
+    if (tok.el) {
+      tok.el.style.transition = 'opacity .4s';
+      tok.el.style.opacity = '0';
+      setTimeout(() => {
+        tok.el?.remove();
+        if (Object.keys(tokens).length === 0)
+          document.getElementById('grid').innerHTML = '<p class="empty-state">Waiting for tokens…</p>';
+      }, 400);
+    }
+    delete tokens[chip];
+  }
+
+  function battColor(pct) { return pct > 40 ? '#00FFCD' : pct > 15 ? '#fbbf24' : '#f87171'; }
+
+  function renderCard(tok, changedIdx) {
+    const grid = document.getElementById('grid');
+    const emp  = grid.querySelector('.empty-state');
+    if (emp) emp.remove();
+    if (!tok.el) { tok.el = document.createElement('div'); tok.el.className = 'token-card'; grid.appendChild(tok.el); }
+
+    tok.el.classList.remove('flash'); void tok.el.offsetWidth; tok.el.classList.add('flash');
+
+    const pct = tok.batt >= 2000 ? Math.round(Math.max(0, Math.min(100, (tok.batt - 3000) / 1200 * 100))) : null;
+    const col = pct !== null ? battColor(pct) : '#334155';
+
+    const battHTML = pct !== null ? `
+      <div class="batt-wrap" style="color:${col}" title="${tok.batt}mV">
+        <div class="batt-body"><div class="batt-fill" style="width:${pct}%;background:${col}"></div></div>
+        <div class="batt-nub"></div>
+        <span class="batt-pct">${pct}%</span>
+      </div>` : '';
+
+    const slotsHTML = tok.slots.map((v,i) => {
+      const occ = v !== 0, chg = i === changedIdx;
+      return `<div class="slot${occ?' occupied':''}${chg?' just-changed':''}">
+        <div class="slot-label">SS${i+1}</div>
+        <div class="slot-value${occ?' occupied':''}">${occ ? v : '—'}</div>
+      </div>`;
+    }).join('');
+
+    tok.el.innerHTML = `
+      <div class="card-header">
+        <span class="chip-id" style="color:${tok.color}">${tok.chip}</span>
+        ${battHTML}
+        <span class="card-time">${tok.time}</span>
+      </div>
+      <div class="slots">${slotsHTML}</div>`;
+  }
+
+  function addLogRow(ev, tok) {
+    const tags = ev.slots.map((v,i) => {
+      const occ = v !== 0;
+      return `<span class="stag${occ?' occ':' empty'}">${occ ? `SS${i+1}:${v}` : `SS${i+1}`}</span>`;
+    }).join('');
+    const row = document.createElement('div');
+    row.className = 'log-row new';
+    row.innerHTML = `<span class="lc-time">${ev.time}</span><span class="lc-chip" style="color:${tok.color}">${ev.chip}</span><span class="lc-slots">${tags}</span>`;
+    document.getElementById('log-rows').prepend(row);
+    document.getElementById('log-badge').textContent = ++logCount;
+    const rows = document.getElementById('log-rows');
+    if (rows.children.length > MAX_LOG) rows.lastElementChild?.remove();
+  }
+
+  function onEvent(ev) {
+    const tok = getToken(ev.chip);
+    let changedIdx = -1;
+    ev.slots.forEach((v,i) => { if (v !== (tok.slots[i] ?? 0)) changedIdx = i; });
+    tok.slots = ev.slots; tok.batt = ev.batt || 0; tok.time = ev.time;
+    touchToken(tok);
+    renderCard(tok, changedIdx);
+    addLogRow(ev, tok);
+  }
+
+  function clearAll() {
+    Object.values(tokens).forEach(t => { if (t.timer) clearTimeout(t.timer); if (t.el) t.el.remove(); });
+    Object.keys(tokens).forEach(k => delete tokens[k]);
+    document.getElementById('grid').innerHTML = '<p class="empty-state">Waiting for tokens…</p>';
+    document.getElementById('log-rows').innerHTML = '';
+    logCount = 0; colorIdx = 0;
+    document.getElementById('log-badge').textContent = '0';
+  }
+
+  function toggleLog() {
+    logOpen = !logOpen;
+    document.getElementById('log-body').classList.toggle('open', logOpen);
+    document.getElementById('log-toggle').classList.toggle('open', logOpen);
+  }
+
+  function connect() {
+    const dot = document.getElementById('dot'), status = document.getElementById('status');
+    const es = new EventSource('/events');
+    es.onopen    = () => { dot.classList.add('live'); status.textContent = 'Connected'; };
+    es.onmessage = e => { const d = JSON.parse(e.data); if (!d.connected) onEvent(d); };
+    es.onerror   = () => { dot.classList.remove('live'); status.textContent = 'Reconnecting…'; };
+  }
+
+  connect();
+</script>
+</body>
+</html>

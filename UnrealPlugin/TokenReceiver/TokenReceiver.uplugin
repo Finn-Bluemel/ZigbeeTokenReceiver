@@ -1,0 +1,20 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "1.0",
+    "FriendlyName": "Token Receiver",
+    "Description": "Reads Zigbee token messages from a USB serial port and exposes them as Blueprint events.",
+    "Category": "Input",
+    "CreatedBy": "Digitracks",
+    "CanContainContent": false,
+    "IsBetaVersion": false,
+    "IsExperimentalVersion": false,
+    "Installed": false,
+    "Modules": [
+        {
+            "Name": "TokenReceiver",
+            "Type": "Runtime",
+            "LoadingPhase": "Default"
+        }
+    ]
+}

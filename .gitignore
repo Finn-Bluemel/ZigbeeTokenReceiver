@@ -1,3 +1,20 @@
+# Unreal build artifacts
 Binaries/
 Intermediate/
 *.pdb
+Saved/
+
+# PlatformIO build output
+.pio/
+
+# Compiled executables (built locally)
+bridge/zigbee-monitor.exe
+bridge/osc-bridge.exe
+bridge/osc-bridge.exe~
+
+# Firmware binaries (built locally, copied from .pio)
+bridge/firmware/sender/*.bin
+bridge/firmware/receiver/*.bin
+
+# Go dependency cache
+zigbee-monitor/vendor/

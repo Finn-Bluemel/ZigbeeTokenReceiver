@@ -283,15 +283,15 @@
 
     tok.el.classList.remove('flash'); void tok.el.offsetWidth; tok.el.classList.add('flash');
 
-    const pct = tok.batt >= 2000 ? Math.round(Math.max(0, Math.min(100, (tok.batt - 3000) / 1200 * 100))) : null;
-    const col = pct !== null ? battColor(pct) : '#334155';
+    const pct = Math.round(Math.max(0, Math.min(100, (tok.batt - 3000) / 1200 * 100)));
+    const col = battColor(pct);
 
-    const battHTML = pct !== null ? `
+    const battHTML = `
       <div class="batt-wrap" style="color:${col}" title="${tok.batt}mV">
         <div class="batt-body"><div class="batt-fill" style="width:${pct}%;background:${col}"></div></div>
         <div class="batt-nub"></div>
         <span class="batt-pct">${pct}%</span>
-      </div>` : '';
+      </div>`;
 
     const slotsHTML = tok.slots.map((v,i) => {
       const occ = v !== 0, chg = i === changedIdx;

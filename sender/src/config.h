@@ -11,6 +11,10 @@
 #define PIN_OW3  22   // SS3 — GPIO22_D4    (U1 pin 5)
 #define PIN_OW4  23   // SS4 — GPIO23_D5    (U1 pin 6)
 
+// ── Battery ADC ──────────────────────────────────────────────────────────────
+// GPIO21 via 100kΩ/100kΩ voltage divider → ADC reads Vbatt/2, multiply by 2
+#define PIN_BATT   0   // GPIO0 (A0/D0) — ADC1 ch0
+
 // ── DS2413 family code ───────────────────────────────────────────────────────
 #define DS2413_FAMILY_CODE   0x3A
 #define DS2413_CMD_READ_PIO  0xF5

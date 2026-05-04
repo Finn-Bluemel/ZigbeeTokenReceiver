@@ -1,0 +1,178 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg"
+     font-family="'DM Sans', Helvetica, sans-serif">
+  <defs>
+    <radialGradient id="tokenGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#8850ff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#8850ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tableGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%"   stop-color="#8850ff" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#080808" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#080808"/>
+
+  <!-- ── HEADER ── -->
+  <text x="64" y="56" font-size="11" fill="#8850ff" letter-spacing="5" font-weight="700">TOUCHTOKEN</text>
+  <line x1="64" y1="68" x2="580" y2="68" stroke="#1a1f2e" stroke-width="1"/>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LEFT — touch table + token
+       ═══════════════════════════════════════════════════════ -->
+
+  <!-- table ambient glow -->
+  <ellipse cx="295" cy="530" rx="270" ry="90" fill="url(#tableGlow)"/>
+
+  <!-- Touch table (perspective) -->
+  <polygon points="55,590 535,590 485,445 105,445" fill="#09090f" stroke="#1e2030" stroke-width="1.5"/>
+  <!-- grid -->
+  <line x1="148" y1="457" x2="88"  y2="580" stroke="#0f0f1a" stroke-width="1"/>
+  <line x1="218" y1="449" x2="165" y2="581" stroke="#0f0f1a" stroke-width="1"/>
+  <line x1="295" y1="445" x2="295" y2="581" stroke="#0f0f1a" stroke-width="1"/>
+  <line x1="372" y1="449" x2="425" y2="581" stroke="#0f0f1a" stroke-width="1"/>
+  <line x1="442" y1="457" x2="502" y2="580" stroke="#0f0f1a" stroke-width="1"/>
+  <line x1="105" y1="488" x2="485" y2="488" stroke="#0f0f1a" stroke-width="1"/>
+  <line x1="96"  y1="535" x2="534" y2="535" stroke="#0f0f1a" stroke-width="1"/>
+  <!-- table legs -->
+  <line x1="55"  y1="590" x2="55"  y2="640" stroke="#141420" stroke-width="2"/>
+  <line x1="535" y1="590" x2="535" y2="640" stroke="#141420" stroke-width="2"/>
+  <line x1="55"  y1="640" x2="145" y2="650" stroke="#141420" stroke-width="1.5"/>
+  <line x1="535" y1="640" x2="445" y2="650" stroke="#141420" stroke-width="1.5"/>
+
+  <text x="295" y="678" font-size="9" fill="#1e2030" text-anchor="middle" letter-spacing="5">TOUCH SURFACE</text>
+
+  <!-- token halo on table -->
+  <ellipse cx="295" cy="472" rx="80" ry="18" fill="url(#tokenGlow)"/>
+  <ellipse cx="295" cy="470" rx="72" ry="14" fill="none" stroke="#1a0f33" stroke-width="1"/>
+
+  <!-- ── TOKEN ── -->
+  <circle cx="295" cy="340" r="100" fill="#07070f" stroke="#8850ff" stroke-width="2" filter="url(#softglow)"/>
+  <circle cx="295" cy="340" r="92"  fill="none" stroke="#14102a" stroke-width="1"/>
+  <circle cx="295" cy="340" r="106" fill="none" stroke="#8850ff" stroke-width="0.5" stroke-dasharray="3,6" opacity="0.35"/>
+
+  <!-- token stem to table -->
+  <line x1="240" y1="438" x2="248" y2="455" stroke="#2a1f44" stroke-width="1"/>
+  <line x1="350" y1="438" x2="342" y2="455" stroke="#2a1f44" stroke-width="1"/>
+
+  <!-- ── 4 CHIP SLOTS ── -->
+  <!-- SS1 -->
+  <rect x="242" y="296" width="48" height="38" rx="4" fill="#0c0820" stroke="#8850ff" stroke-width="1.5" filter="url(#glow)"/>
+  <rect x="244" y="298" width="44" height="34" rx="3" fill="#8850ff" fill-opacity="0.1"/>
+  <line x1="250" y1="308" x2="284" y2="308" stroke="#8850ff" stroke-width="1" opacity="0.7"/>
+  <line x1="250" y1="315" x2="278" y2="315" stroke="#8850ff" stroke-width="1" opacity="0.45"/>
+  <line x1="250" y1="322" x2="281" y2="322" stroke="#8850ff" stroke-width="1" opacity="0.25"/>
+  <text x="266" y="291" font-size="8" fill="#8850ff" text-anchor="middle" letter-spacing="1">SS1</text>
+
+  <!-- SS2 -->
+  <rect x="300" y="296" width="48" height="38" rx="4" fill="#0c0820" stroke="#8850ff" stroke-width="1.5" filter="url(#glow)"/>
+  <rect x="302" y="298" width="44" height="34" rx="3" fill="#8850ff" fill-opacity="0.1"/>
+  <line x1="308" y1="308" x2="342" y2="308" stroke="#8850ff" stroke-width="1" opacity="0.7"/>
+  <line x1="308" y1="315" x2="336" y2="315" stroke="#8850ff" stroke-width="1" opacity="0.45"/>
+  <line x1="308" y1="322" x2="339" y2="322" stroke="#8850ff" stroke-width="1" opacity="0.25"/>
+  <text x="324" y="291" font-size="8" fill="#8850ff" text-anchor="middle" letter-spacing="1">SS2</text>
+
+  <!-- SS3 — empty -->
+  <rect x="242" y="346" width="48" height="38" rx="4" fill="#0a0818" stroke="#252535" stroke-width="1.5"/>
+  <text x="266" y="370" font-size="8" fill="#252535" text-anchor="middle">empty</text>
+  <text x="266" y="391" font-size="8" fill="#252535" text-anchor="middle" letter-spacing="1">SS3</text>
+
+  <!-- SS4 -->
+  <rect x="300" y="346" width="48" height="38" rx="4" fill="#07100e" stroke="#00FFCD" stroke-width="1.5" filter="url(#glow)"/>
+  <rect x="302" y="348" width="44" height="34" rx="3" fill="#00FFCD" fill-opacity="0.07"/>
+  <line x1="308" y1="358" x2="342" y2="358" stroke="#00FFCD" stroke-width="1" opacity="0.7"/>
+  <line x1="308" y1="365" x2="336" y2="365" stroke="#00FFCD" stroke-width="1" opacity="0.45"/>
+  <line x1="308" y1="372" x2="339" y2="372" stroke="#00FFCD" stroke-width="1" opacity="0.25"/>
+  <text x="324" y="391" font-size="8" fill="#00FFCD" text-anchor="middle" letter-spacing="1">SS4</text>
+
+  <!-- token ID -->
+  <text x="295" y="422" font-size="8" fill="#2a2a3a" text-anchor="middle" letter-spacing="3">ID · 436135512</text>
+
+  <!-- WHERE label -->
+  <text x="295" y="700" font-size="9" fill="#2a2a3a" text-anchor="middle" letter-spacing="5">WHERE</text>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CONNECTING LINES — token circle edge → card left
+       Token centre (295, 340) r=100
+       Exit points calculated along each direction vector
+       ═══════════════════════════════════════════════════════ -->
+
+  <!-- → Card 1  exit (391, 314) -->
+  <line x1="391" y1="314" x2="660" y2="240" stroke="#8850ff" stroke-width="1.5"/>
+  <circle cx="391" cy="314" r="3" fill="#8850ff" filter="url(#glow)"/>
+  <circle cx="660" cy="240" r="3" fill="#8850ff" filter="url(#glow)"/>
+
+  <!-- → Card 2  exit (395, 343) -->
+  <line x1="395" y1="343" x2="660" y2="352" stroke="#8850ff" stroke-width="1.5"/>
+  <circle cx="395" cy="343" r="3" fill="#8850ff" filter="url(#glow)"/>
+  <circle cx="660" cy="352" r="3" fill="#8850ff" filter="url(#glow)"/>
+
+  <!-- → Card 3  exit (390, 372) -->
+  <line x1="390" y1="372" x2="660" y2="464" stroke="#8850ff" stroke-width="1.5"/>
+  <circle cx="390" cy="372" r="3" fill="#8850ff" filter="url(#glow)"/>
+  <circle cx="660" cy="464" r="3" fill="#8850ff" filter="url(#glow)"/>
+
+  <!-- → Card 4  exit (379, 394) -->
+  <line x1="379" y1="394" x2="660" y2="576" stroke="#00FFCD" stroke-width="1.5"/>
+  <circle cx="379" cy="394" r="3" fill="#00FFCD" filter="url(#glow)"/>
+  <circle cx="660" cy="576" r="3" fill="#00FFCD" filter="url(#glow)"/>
+
+  <!-- ═══════════════════════════════════════════════════════
+       RIGHT — 4 benefit cards
+       ═══════════════════════════════════════════════════════ -->
+
+  <!-- Card 1 — Unique Identity -->
+  <rect x="660" y="192" width="572" height="96" rx="3" fill="#0a0810" stroke="#8850ff" stroke-width="1.5"/>
+  <rect x="660" y="192" width="4"   height="96" rx="1" fill="#8850ff"/>
+  <text x="682" y="222" font-size="10" fill="#8850ff" letter-spacing="4" font-weight="700">UNIQUE IDENTITY</text>
+  <text x="682" y="246" font-size="13" fill="#EEF0EB" font-weight="300">Every token carries a permanent ID.</text>
+  <text x="682" y="266" font-size="11" fill="#444">Recognised instantly at any station, any session, forever.</text>
+  <circle cx="1208" cy="240" r="16" fill="none" stroke="#8850ff" stroke-width="1"/>
+  <text x="1208" y="245" font-size="14" fill="#8850ff" text-anchor="middle" font-weight="700">1</text>
+
+  <!-- Card 2 — Configuration -->
+  <rect x="660" y="304" width="572" height="96" rx="3" fill="#0a0810" stroke="#8850ff" stroke-width="1.5"/>
+  <rect x="660" y="304" width="4"   height="96" rx="1" fill="#8850ff"/>
+  <text x="682" y="334" font-size="10" fill="#8850ff" letter-spacing="4" font-weight="700">CONFIGURATION CARRIER</text>
+  <text x="682" y="358" font-size="13" fill="#EEF0EB" font-weight="300">Chips store settings, modes, or parameters.</text>
+  <text x="682" y="378" font-size="11" fill="#444">Swap a chip — change the experience. No software required.</text>
+  <circle cx="1208" cy="352" r="16" fill="none" stroke="#8850ff" stroke-width="1"/>
+  <text x="1208" y="357" font-size="14" fill="#8850ff" text-anchor="middle" font-weight="700">2</text>
+
+  <!-- Card 3 — Persistent Memory -->
+  <rect x="660" y="416" width="572" height="96" rx="3" fill="#0a0810" stroke="#8850ff" stroke-width="1.5"/>
+  <rect x="660" y="416" width="4"   height="96" rx="1" fill="#8850ff"/>
+  <text x="682" y="446" font-size="10" fill="#8850ff" letter-spacing="4" font-weight="700">PERSISTENT MEMORY</text>
+  <text x="682" y="470" font-size="13" fill="#EEF0EB" font-weight="300">Tokens remember. Users don't have to.</text>
+  <text x="682" y="490" font-size="11" fill="#444">Carry profiles, progress, or permissions from table to table.</text>
+  <circle cx="1208" cy="464" r="16" fill="none" stroke="#8850ff" stroke-width="1"/>
+  <text x="1208" y="469" font-size="14" fill="#8850ff" text-anchor="middle" font-weight="700">3</text>
+
+  <!-- Card 4 — Beyond the Surface -->
+  <rect x="660" y="528" width="572" height="96" rx="3" fill="#07100e" stroke="#00FFCD" stroke-width="1.5"/>
+  <rect x="660" y="528" width="4"   height="96" rx="1" fill="#00FFCD"/>
+  <text x="682" y="558" font-size="10" fill="#00FFCD" letter-spacing="4" font-weight="700">BEYOND THE SURFACE</text>
+  <text x="682" y="582" font-size="13" fill="#EEF0EB" font-weight="300">Works without direct screen contact.</text>
+  <text x="682" y="602" font-size="11" fill="#444">Broadcast presence wirelessly — proximity is enough.</text>
+  <circle cx="1208" cy="576" r="16" fill="none" stroke="#00FFCD" stroke-width="1" filter="url(#glow)"/>
+  <text x="1208" y="581" font-size="14" fill="#00FFCD" text-anchor="middle" font-weight="700">4</text>
+
+  <!-- WHAT label -->
+  <text x="960" y="700" font-size="9" fill="#2a2a3a" text-anchor="middle" letter-spacing="5">WHAT</text>
+
+  <!-- ── FOOTER ── -->
+  <line x1="64" y1="710" x2="1216" y2="710" stroke="#0f1020" stroke-width="1"/>
+  <text x="64"   y="702" font-size="9" fill="#1e1e2e" letter-spacing="3">STUDIO BORABORA</text>
+  <text x="640"  y="702" font-size="9" fill="#1e1e2e" text-anchor="middle" letter-spacing="2">ESP32-C6  ·  ZIGBEE  ·  DS2431 1-WIRE</text>
+  <text x="1216" y="702" font-size="9" fill="#1e1e2e" text-anchor="end"   letter-spacing="2">TOUCHTOKEN v1.0</text>
+
+</svg>

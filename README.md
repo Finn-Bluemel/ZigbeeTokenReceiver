@@ -164,6 +164,8 @@ Drop `UnrealPlugin/TokenReceiver/` into your project's `Plugins/` directory and 
 3. **Bind Event to On Token Received** and create a custom event
 4. In the event handler, **Break FTokenData** and use the fields
 
+![Blueprint example](docs/blueprint_example.png)
+
 > If multiple Espressif boards are plugged in simultaneously, use `OpenPort("COM16", 115200)` explicitly. **Auto Open Port** picks the first `VID_303A` device it finds, which may be a sender board.
 
 ### FTokenData fields

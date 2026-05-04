@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include "Zigbee.h"
 #include "onewire_manager.h"
+#include "config.h"
 
 #define TOKEN_ENDPOINT    10
 #define TOKEN_CLUSTER_ID  0xFC00
@@ -78,9 +79,14 @@ ZigbeeTokenSender zbSender(TOKEN_ENDPOINT);
 
 static int32_t token_id = 0;
 
+static int readBattMv() {
+    // 100kΩ/100kΩ divider: ADC sees Vbatt/2, so multiply by 2
+    return analogReadMilliVolts(PIN_BATT) * 2;
+}
+
 void buildMessage(char* buf, size_t buflen) {
     oneWireScan();
-    int batt_mv = 3600 + random(-30, 30);
+    int batt_mv = readBattMv();
     snprintf(buf, buflen,
         "TOKEN %d [%d %d %d %d] batt:%dmV",
         token_id,
@@ -104,6 +110,9 @@ void setup() {
         Serial.println("[sender] Zigbee init failed, resetting NVS...");
         Zigbee.factoryReset();
     }
+
+    analogSetAttenuation(ADC_11db);  // full-scale ~3.3 V (covers up to ~4.2 V / 2 = 2.1 V at divider)
+    pinMode(PIN_BATT, INPUT);
 
     oneWireInit();
     Serial.println("[sender] Scanning for coordinator...");

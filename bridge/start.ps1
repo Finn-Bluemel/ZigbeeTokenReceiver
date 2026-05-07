@@ -13,9 +13,6 @@ Start-Sleep -Milliseconds 200
 
 Write-Host "Starting Zigbee Monitor  ->  http://localhost:$WebPort  (serial: $Port)"
 
-# Start the monitor in the background, then open Chrome once it's up
 Start-Process -FilePath "$PSScriptRoot\zigbee-monitor.exe" -ArgumentList $Port, $WebPort
-
-# Give the server a moment to bind the port before opening the browser
 Start-Sleep -Milliseconds 800
-Start-Process "chrome.exe" "http://localhost:$WebPort"
+Start-Process "http://localhost:$WebPort"

@@ -12,7 +12,4 @@ Stop-Process -Name "zigbee-monitor" -Force -ErrorAction SilentlyContinue
 Start-Sleep -Milliseconds 200
 
 Write-Host "Starting Zigbee Monitor  ->  http://localhost:$WebPort  (serial: $Port)"
-
-Start-Process -FilePath "$PSScriptRoot\zigbee-monitor.exe" -ArgumentList $Port, $WebPort
-Start-Sleep -Milliseconds 800
-Start-Process "http://localhost:$WebPort"
+& "$PSScriptRoot\zigbee-monitor.exe" $Port $WebPort

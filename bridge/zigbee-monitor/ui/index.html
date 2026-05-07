@@ -246,7 +246,7 @@
   let logCount  = 0, logOpen = false, colorIdx = 0;
   const palette = ['#8850ff','#00FFCD','#60a5fa','#f472b6','#fbbf24','#fb923c','#22d3ee','#f87171'];
 
-  const TIMEOUT_MS = 5000; // remove card after 5 s with no message
+  const TIMEOUT_MS = 90000; // remove card after 90 s with no message
 
   function getToken(chip) {
     if (!tokens[chip]) tokens[chip] = { chip, slots:[0,0,0,0], batt:0, time:'', color:palette[colorIdx++ % palette.length], el:null, timer:null };

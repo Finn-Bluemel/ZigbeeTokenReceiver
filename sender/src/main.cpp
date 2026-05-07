@@ -1,4 +1,4 @@
-// Zigbee End Device — sends token messages once per second.
+// Zigbee End Device — scans 1-Wire every 200 ms, transmits on state change.
 // Target: Seeed Xiao ESP32-C6  |  arduino-esp32 3.3.8 (pioarduino)
 // Build: -DZIGBEE_MODE_ED  partition: zigbee.csv
 
@@ -79,19 +79,29 @@ ZigbeeTokenSender zbSender(TOKEN_ENDPOINT);
 
 static int32_t token_id = 0;
 
+// Last transmitted state — used to detect changes
+static int lastSlots[4]  = {-1, -1, -1, -1};
+static int lastBattMv    = -1;
+
+// Transmit on change; also send a heartbeat so the web UI card stays alive
+#define SCAN_INTERVAL_MS      200
+#define HEARTBEAT_INTERVAL_MS 60000
+#define BATT_THRESHOLD_MV     100   // ignore ADC noise below this
+
 static int readBattMv() {
-    // 100kΩ/100kΩ divider: ADC sees Vbatt/2, so multiply by 2
-    return analogReadMilliVolts(PIN_BATT) * 2;
+    return analogReadMilliVolts(PIN_BATT) * 2;  // 100k/100k divider
 }
 
-void buildMessage(char* buf, size_t buflen) {
-    oneWireScan();
-    int batt_mv = readBattMv();
-    snprintf(buf, buflen,
-        "TOKEN %d [%d %d %d %d] batt:%dmV",
-        token_id,
-        getSlotNum(0), getSlotNum(1), getSlotNum(2), getSlotNum(3),
-        batt_mv);
+static bool stateChanged(int battMv) {
+    for (int i = 0; i < 4; i++)
+        if (getSlotNum(i) != lastSlots[i]) return true;
+    if (abs(battMv - lastBattMv) > BATT_THRESHOLD_MV) return true;
+    return false;
+}
+
+static void saveState(int battMv) {
+    for (int i = 0; i < 4; i++) lastSlots[i] = getSlotNum(i);
+    lastBattMv = battMv;
 }
 
 // ── Arduino ───────────────────────────────────────────────────────────────────
@@ -129,12 +139,28 @@ void loop() {
         return;
     }
 
-    static unsigned long lastSend = 0;
-    if (millis() - lastSend >= 1000) {
-        lastSend = millis();
-        char msg[128];
-        buildMessage(msg, sizeof(msg));
-        Serial.printf("[sender] TX: %s\n", msg);
-        zbSender.sendPayload(msg);
+    static unsigned long lastScan      = 0;
+    static unsigned long lastHeartbeat = 0;
+
+    if (millis() - lastScan >= SCAN_INTERVAL_MS) {
+        lastScan = millis();
+        oneWireScan();
+        int batt = readBattMv();
+
+        bool changed   = stateChanged(batt);
+        bool heartbeat = (millis() - lastHeartbeat >= HEARTBEAT_INTERVAL_MS);
+
+        if (changed || heartbeat) {
+            char msg[128];
+            snprintf(msg, sizeof(msg),
+                "TOKEN %d [%d %d %d %d] batt:%dmV",
+                token_id,
+                getSlotNum(0), getSlotNum(1), getSlotNum(2), getSlotNum(3),
+                batt);
+            Serial.printf("[sender] TX: %s\n", msg);
+            zbSender.sendPayload(msg);
+            saveState(batt);
+            lastHeartbeat = millis();
+        }
     }
 }
